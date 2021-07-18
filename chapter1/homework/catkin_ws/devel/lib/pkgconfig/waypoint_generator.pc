@@ -1,0 +1,8 @@
+prefix=/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter1/homework/catkin_ws/devel
+
+Name: waypoint_generator
+Description: Description of waypoint_generator
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
