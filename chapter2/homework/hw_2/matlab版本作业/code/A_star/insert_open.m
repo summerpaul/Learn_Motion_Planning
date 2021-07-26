@@ -1,3 +1,4 @@
+% 形成一个向量(结构体)数据成员包括 节点本身,节点的父节点,当前的节点权重值,启发函数值,最终cost值
 function new_row = insert_open(xval,yval,parent_xval,parent_yval,hn,gn,fn)
 %Function to Populate the OPEN LIST
 %OPEN LIST FORMAT

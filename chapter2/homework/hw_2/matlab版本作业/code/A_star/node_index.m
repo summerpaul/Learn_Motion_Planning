@@ -1,3 +1,4 @@
+% 根据点的坐标 获得点的id
 function n_index = node_index(OPEN,xval,yval)
     %This function returns the index of the location of a node in the list
     %OPEN

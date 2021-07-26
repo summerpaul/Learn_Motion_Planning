@@ -1,3 +1,4 @@
+% 返回cost值最小的节点
 function i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
 %Function to return the Node with minimum fn
 % This function takes the list OPEN as its input and returns the index of the
