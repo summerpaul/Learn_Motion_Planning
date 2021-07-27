@@ -10,6 +10,7 @@ function i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
  k=1;
  flag=0;
  goal_index=0;
+ % 遍历OPENlist
  for j=1:OPEN_COUNT
      if (OPEN(j,1)==1)
          temp_array(k,:)=[OPEN(j,:) j]; %#ok<*AGROW>

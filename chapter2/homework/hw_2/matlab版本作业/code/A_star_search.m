@@ -84,8 +84,10 @@ function path = A_star_search(map,MAX_X,MAX_Y)
     % OPEN 队列表示代检查的点
     OPEN(OPEN_COUNT,:)=insert_open(xNode,yNode,xNode,yNode,goal_distance,path_cost,goal_distance);
     %  访问第一个点(源点到源点)    
+    % 表示访问过不能再访问
     OPEN(OPEN_COUNT,1)=0;
     % 记录被访问过的节点     
+    % 将初始元素放入到closed List中
     CLOSED_COUNT=CLOSED_COUNT+1;
     CLOSED(CLOSED_COUNT,1)=xNode;
     CLOSED(CLOSED_COUNT,2)=yNode;
@@ -98,60 +100,36 @@ function path = A_star_search(map,MAX_X,MAX_Y)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % 跳出循环的条件:没有需要被访问的节点
 %     [r, c] = size(OPEN(OPEN_COUNT, :));
-    while(length(OPEN(OPEN_COUNT,:)) ~= 0) %you have to dicide the Conditions for while loop exit 
-        % 弹出优先队列中的最小的元素,并放入到CLOSE列表中
-        node_x = OPEN(OPEN_COUNT,2);
-        node_y = OPEN(OPEN_COUNT,3);
-        
-        % 判断最后搜索的点是否被扩展
-        if(node_x == xTarget && node_y == yTarget)
-            break;
-        end
-%         gn = path_cost;
-        % 扩展新的节点
-        i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
-        % 寻找当前点待扩展的点
-        exp_array = expand_array(node_x,node_y,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y)
-        % 找到fn最小点的x y
-        fn = exp_array(:,5);
-        i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
-%         i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
-
-        min_index = find(fn == min(fn))
-        if length(min_index) > 1
-            min_index = min_index(2)
-        end
-        xNode_new = exp_array(min_index, 1)
-        yNode_new = exp_array(min_index, 2)
-        
-        goal_distance=distance(xNode_new,yNode_new,xTarget,yTarget);
-        path_cost=path_cost + exp_array(min_index, 3);
-        fn_new = path_cost + goal_distance;
-        % 更新OPENlist
-        OPEN_COUNT = OPEN_COUNT +1;
-        OPEN(OPEN_COUNT,:)=insert_open(xNode_new,yNode_new,xNode,yNode,goal_distance,path_cost,fn_new);
-        CLOSED_COUNT=CLOSED_COUNT+1;
-        
-        
-        CLOSED(CLOSED_COUNT,1)=xNode_new;
-        CLOSED(CLOSED_COUNT,2)=yNode_new;
-        xNode = xNode_new;
-        yNode = xNode_new;
-        
-        
-%         n_index = node_index(OPEN,exp_array(min_index,1),exp_array(min_index,2)) 
-        
-%         i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
-        
-        
-        
-%         [r, c] = size(OPEN);
-%         [r, c] = size(OPEN);
-        
-        
-        
-        
-     %
+    % 判断CLOSED list中的最后元素是不是终点
+    while(CLOSED(CLOSED_COUNT,1)~= xTarget || CLOSED(CLOSED_COUNT,2) ~= yTarget) %you have to dicide the Conditions for while loop exit 
+        % 找出上一时刻弹出的OPEN List中的元素,即CLOSED list中的最后一个元素
+         node_x = CLOSED(CLOSED_COUNT,1);
+         node_y = CLOSED(CLOSED_COUNT,2);
+         % 寻找可扩展的节点
+         exp_array = expand_array(node_x,node_y,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
+         % 将所占的点放入OPEN List中
+         [r, c] = size(exp_array);
+         for i = 1 : r
+             OPEN_COUNT=1 + OPEN_COUNT;
+             temp_x = exp_array(i, 1);
+             temp_y = exp_array(i, 2);
+             hn= exp_array(i, 3);
+             gn= exp_array(i, 4);
+             fn= exp_array(i, 5);
+             OPEN(OPEN_COUNT,:)=insert_open(temp_x,temp_y,node_x,node_y,hn,gn,fn);
+         end
+         % 找出当前OPEN List中最小的值
+         i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
+         if (i_min == -1)
+             str=['Cannot find path !!'];
+             disp(str);
+             break;
+         end
+         %将其弹出并键入到CLOSED list中
+         OPEN(i_min,1)=0;
+         CLOSED_COUNT=CLOSED_COUNT+1;
+         CLOSED(CLOSED_COUNT,1)=OPEN(i_min,2);
+         CLOSED(CLOSED_COUNT,2)=OPEN(i_min,3);
      %finish the while loop
      %
      
@@ -167,10 +145,29 @@ function path = A_star_search(map,MAX_X,MAX_Y)
     %
     
    path = [];
-   [m, n] = size(OPEN)
-   for i=1:m
-       path(i, 1)=  OPEN(i, 2);
-       path(i, 2) = OPEN(i, 3);
+   %寻找CLOSED中最后一个元素,寻找其父亲节点
+   end_x = CLOSED(CLOSED_COUNT,1);
+   end_y = CLOSED(CLOSED_COUNT,2);
+   % 当父亲节点最终为起点的时候路径找到
+   n_index = node_index(OPEN,end_x,end_x)
+   path_index = 1;
+   path(path_index, 1) = end_x;
+   path(path_index, 2) = end_y;
+   
+   while (OPEN(n_index, 2) ~= xStart || OPEN(n_index, 3) ~= yStart)
+       pre_x = OPEN(n_index, 4)
+       pre_y = OPEN(n_index, 5)
+       n_index = node_index(OPEN,pre_x,pre_y);
+       path_index = 1 + path_index;
+       path(path_index, 1) = pre_x;
+       path(path_index, 2) = pre_y;
+   end
+   path
+   % 将路径倒置即为搜索的路径
+   path = flip(path);
+   path
+   
+       
    
    
    
