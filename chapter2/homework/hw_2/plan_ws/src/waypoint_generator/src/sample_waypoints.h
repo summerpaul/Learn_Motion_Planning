@@ -5,6 +5,7 @@
 #include <tf/tf.h>
 #include <nav_msgs/Path.h>
 
+// 对轨迹的处理
 nav_msgs::Path point()
 {
     // Circle parameters

@@ -115,6 +115,7 @@ void publish_waypoints_vis() {
     pub2.publish(poseArray);
 }
 
+// 接受到定位信息
 void odom_callback(const nav_msgs::Odometry::ConstPtr& msg) {
     is_odom_ready = true;
     odom = *msg;
@@ -143,16 +144,19 @@ void odom_callback(const nav_msgs::Odometry::ConstPtr& msg) {
     }
 }
 
+// 获取得到目标点的信息
 void goal_callback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
 /*    if (!is_odom_ready) {
         ROS_ERROR("[waypoint_generator] No odom!");
         return;
     }*/
 
+    // 规划的时间
     trigged_time = ros::Time::now(); //odom.header.stamp;
     //ROS_ASSERT(trigged_time > ros::Time(0));
 
     ros::NodeHandle n("~");
+    // 读取设定的轨迹的类型,进行不同处理
     n.param("waypoint_type", waypoint_type, string("manual"));
     
     if (waypoint_type == string("circle")) {
@@ -170,6 +174,7 @@ void goal_callback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
     } else if (waypoint_type == string("series")) {
         load_waypoints(n, trigged_time);
     } else if (waypoint_type == string("manual-lonely-waypoint")) {
+        // 现在是不做后处理的点的序列, 三维的点
         if (msg->pose.position.z >= 0) {
             // if height >= 0, it's a valid goal;
             geometry_msgs::PoseStamped pt = *msg;
@@ -178,6 +183,7 @@ void goal_callback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
             publish_waypoints_vis();
             publish_waypoints();
         } else {
+            
             ROS_WARN("[waypoint_generator] invalid goal in manual-lonely-waypoint mode.");
         }
     } else {
@@ -206,6 +212,7 @@ void goal_callback(const geometry_msgs::PoseStamped::ConstPtr& msg) {
     }
 }
 
+// 轨迹后处理
 void traj_start_trigger_callback(const geometry_msgs::PoseStamped& msg) {
     if (!is_odom_ready) {
         ROS_ERROR("[waypoint_generator] No odom!");
@@ -241,14 +248,19 @@ void traj_start_trigger_callback(const geometry_msgs::PoseStamped& msg) {
     }
 }
 
+
 int main(int argc, char** argv) {
     ros::init(argc, argv, "waypoint_generator");
     ros::NodeHandle n("~");
+    // 获取roslaunch中的参数
     n.param("waypoint_type", waypoint_type, string("manual"));
+    // 订阅的话题
     ros::Subscriber sub1 = n.subscribe("odom", 10, odom_callback);
     ros::Subscriber sub2 = n.subscribe("goal", 10, goal_callback);
     ros::Subscriber sub3 = n.subscribe("traj_start_trigger", 10, traj_start_trigger_callback);
+    // 发布路径
     pub1 = n.advertise<nav_msgs::Path>("waypoints", 50);
+    // 发布可视化的路径
     pub2 = n.advertise<geometry_msgs::PoseArray>("waypoints_vis", 10);
 
     trigged_time = ros::Time(0);

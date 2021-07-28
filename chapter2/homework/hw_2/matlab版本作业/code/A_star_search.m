@@ -101,6 +101,8 @@ function path = A_star_search(map,MAX_X,MAX_Y)
     % 跳出循环的条件:没有需要被访问的节点
 %     [r, c] = size(OPEN(OPEN_COUNT, :));
     % 判断CLOSED list中的最后元素是不是终点
+    % 判断弹出的点是不是目标点
+    % 等价于 OPEN(OPEN_COUNT,2)~= xTarget || OPEN(OPEN_COUNT,3) ~= yTarget
     while(CLOSED(CLOSED_COUNT,1)~= xTarget || CLOSED(CLOSED_COUNT,2) ~= yTarget) %you have to dicide the Conditions for while loop exit 
         % 找出上一时刻弹出的OPEN List中的元素,即CLOSED list中的最后一个元素
          node_x = CLOSED(CLOSED_COUNT,1);
@@ -109,14 +111,18 @@ function path = A_star_search(map,MAX_X,MAX_Y)
          exp_array = expand_array(node_x,node_y,path_cost,xTarget,yTarget,CLOSED,MAX_X,MAX_Y);
          % 将所占的点放入OPEN List中
          [r, c] = size(exp_array);
-         for i = 1 : r
-             OPEN_COUNT=1 + OPEN_COUNT;
+         % 现在算法缺陷:没有检查拓展的节点是否在原先的OPEN list中,
+         % 而是直接在OPEN List后面直接新增新的节点,OPEN List偏多
+         for i = 1 : r 
              temp_x = exp_array(i, 1);
              temp_y = exp_array(i, 2);
              hn= exp_array(i, 3);
              gn= exp_array(i, 4);
              fn= exp_array(i, 5);
+       
+             OPEN_COUNT=1 + OPEN_COUNT;
              OPEN(OPEN_COUNT,:)=insert_open(temp_x,temp_y,node_x,node_y,hn,gn,fn);
+             
          end
          % 找出当前OPEN List中最小的值
          i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget);
@@ -125,8 +131,11 @@ function path = A_star_search(map,MAX_X,MAX_Y)
              disp(str);
              break;
          end
-         %将其弹出并键入到CLOSED list中
+         % 将其弹出并键入到CLOSED list中
+         % 算法中的弹出不是将将元素移出OPEN List 而是更改标志位
          OPEN(i_min,1)=0;
+         % 算法缺陷,没有将CLOSE List中出现过的节点进行删除再排序,
+         % 使得规划的路径需要重新回溯.
          CLOSED_COUNT=CLOSED_COUNT+1;
          CLOSED(CLOSED_COUNT,1)=OPEN(i_min,2);
          CLOSED(CLOSED_COUNT,2)=OPEN(i_min,3);
