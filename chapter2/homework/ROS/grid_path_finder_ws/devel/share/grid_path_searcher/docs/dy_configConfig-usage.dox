@@ -1,8 +1,0 @@
-\subsubsection usage Usage
-\verbatim
-<node name="dy_config_node" pkg="grid_path_searcher" type="dy_config_node">
-  <param name="SearcherType" type="int" value="0" />
-  <param name="HeuristicType" type="int" value="1" />
-</node>
-\endverbatim
-

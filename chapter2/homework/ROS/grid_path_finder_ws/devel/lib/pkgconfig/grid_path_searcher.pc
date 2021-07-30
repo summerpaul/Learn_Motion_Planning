@@ -1,8 +1,0 @@
-prefix=/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/ROS/grid_path_finder_ws/devel
-
-Name: grid_path_searcher
-Description: Description of grid_path_searcher
-Version: 0.0.1
-Cflags: -I/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/ROS/grid_path_finder_ws/devel/include -I/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/ROS/grid_path_finder_ws/src/grid_path_searcher/include
-Libs: -L${prefix}/lib 
-Requires: 

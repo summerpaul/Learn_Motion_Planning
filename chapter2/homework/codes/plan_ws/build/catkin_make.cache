@@ -1,2 +1,0 @@
-grid_path_searcher:rviz_plugins:waypoint_generator
--DCMAKE_BUILD_TYPE=Debug -DCATKIN_DEVEL_PREFIX=/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/hw_2/plan_ws/devel -DCMAKE_INSTALL_PREFIX=/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/hw_2/plan_ws/install -G Unix Makefiles

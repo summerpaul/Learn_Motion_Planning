@@ -1,8 +1,0 @@
-prefix=/home/sunnypaul/Project/github/Learn_Motion_Planning/chapter2/homework/ROS/grid_path_finder_ws/install
-
-Name: rviz_plugins
-Description: Description of rviz_plugins
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
