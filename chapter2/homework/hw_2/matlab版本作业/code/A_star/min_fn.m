@@ -1,4 +1,3 @@
-% 返回cost值最小的节点
 function i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
 %Function to return the Node with minimum fn
 % This function takes the list OPEN as its input and returns the index of the
@@ -10,7 +9,6 @@ function i_min = min_fn(OPEN,OPEN_COUNT,xTarget,yTarget)
  k=1;
  flag=0;
  goal_index=0;
- % 遍历OPENlist
  for j=1:OPEN_COUNT
      if (OPEN(j,1)==1)
          temp_array(k,:)=[OPEN(j,:) j]; %#ok<*AGROW>
